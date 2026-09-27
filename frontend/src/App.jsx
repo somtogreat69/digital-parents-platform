@@ -7,7 +7,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronDown,
-  ChevronUp,
+  ChevronUp
 } from 'lucide-react';
 
 const campaigns = [
@@ -18,7 +18,7 @@ const campaigns = [
     subtitle:
       'Samuel Adekoya Is Starting Again, This Time with a Dream He Truly Believes In.',
     image:
-      'https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1525875975471-999f65706a10?q=80&w=800&auto=format&fit=crop',
     story: [
       "Sometimes, starting over isn't a sign that you have failed. Sometimes, it is the courage to choose a different path after life has taken you somewhere you never expected.",
       "For Samuel Adekoya, the journey through university has been anything but easy. Samuel gained admission to the University of Benin in 2021 to study chemical engineering, but just months before he began his university journey, his father passed away.",
@@ -32,31 +32,32 @@ const campaigns = [
       "The JUPEB programme and associated expenses will cost approximately ₦470,000. Samuel has already managed to save ₦200,000 but he still has a significant gap to cover.",
       "For Samuel, this isn't simply about returning to school. It is about rebuilding after losing his father, recovering from years of academic setbacks, and finally pursuing a path that reflects his passion and potential.",
       "He knows he has lost some time, but he doesn't want those years to define the rest of his life. Samuel is ready to start again, and this time, he wants to build a future in a field he genuinely believes in.",
-      "Can we support him in starting again?",
-    ],
+      "Can we support him in starting again?"
+    ]
   },
   {
     id: 'aisha_02',
     name: 'Aisha Bello',
     title: 'Clinical Fees',
-    subtitle:
-      'Help Aisha cross the finish line of medical school.',
+    subtitle: 'Help Aisha cross the finish line of medical school.',
     image:
-      'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1531123414708-f95259eff225?q=80&w=800&auto=format&fit=crop',
     story: [
       "The final year of medical school is usually a time of triumph, but for Aisha Bello, it has become a race against time.",
       "Aisha is a 500-level Medicine and Surgery student at the University of Lagos. For the past five years, she has maintained excellent grades while juggling multiple part-time tutoring jobs to support her education.",
       "However, the recent increase in clinical fees and mandatory medical equipment costs has pushed her budget beyond its breaking point. She needs ₦350,000 to clear her final year clinical postings and graduate.",
       "Without these funds, Aisha faces an automatic deferment, delaying her dream of becoming a pediatrician and helping under-resourced communities.",
-      "Let's help Aisha cross the finish line.",
-    ],
+      "Let's help Aisha cross the finish line."
+    ]
   },
   {
     id: 'chinedu_03',
     name: 'Chinedu Okafor',
     title: 'Architecture Workstation',
-    subtitle: 'Designing a better tomorrow requires the right tools today.',
-    image: 'https://images.unsplash.com/photo-1506803682981-6e718a9dd3ee?q=80&w=800&auto=format&fit=crop',
+    subtitle:
+      'Designing a better tomorrow requires the right tools today.',
+    image:
+      'https://images.unsplash.com/photo-1543807535-eceef0bc6599?q=80&w=800&auto=format&fit=crop',
     story: [
       "Architecture is about building the future, but right now, Chinedu Okafor's future is on pause.",
       "Chinedu is a brilliant 300-level Architecture student whose primary tool—his rendering laptop—was severely damaged during a flood at his off-campus hostel.",
@@ -77,9 +78,9 @@ const campaigns = [
       "Fatima Yusuf has fought against all odds to secure her law degree, graduating top of her class. Now, only the Nigerian Law School stands between her and the Bar.",
       "Coming from a small farming community, Fatima is the first female in her extended family to attend university. Her community pooled resources to see her through her undergraduate studies, but the mandatory Law School campus fees are too steep for them to cover.",
       "The total cost for tuition, accommodation, and required textbooks is ₦600,000.",
-      "Fatima wants to specialize in human rights law to protect vulnerable women in rural areas. By funding her Law School fees, you are empowering an advocate who will fight for those who cannot fight for themselves.",
-    ],
-  },
+      "Fatima wants to specialize in human rights law to protect vulnerable women in rural areas. By funding her Law School fees, you are empowering an advocate who will fight for those who cannot fight for themselves."
+    ]
+  }
 ];
 
 export default function App() {
@@ -88,7 +89,9 @@ export default function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
   const [audioData, setAudioData] = useState(null);
-  const audioRef = useRef(null);
+
+  // Initialize a persistent audio element immediately for mobile unlock
+  const audioRef = useRef(new Audio());
 
   const activeCampaign = campaigns[currentIndex];
 
@@ -113,16 +116,20 @@ export default function App() {
   };
 
   const stopAudio = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
-
+    audioRef.current.pause();
+    audioRef.current.src = "";
     setIsPlaying(false);
     setAudioData(null);
   };
 
   const handleToggleAudio = async () => {
-    if (audioData && audioRef.current) {
+    // Register the physical tap with the mobile browser
+    // to help bypass autoplay restrictions.
+    if (!audioData) {
+      audioRef.current.play().catch(() => {});
+    }
+
+    if (audioData) {
       if (isPlaying) {
         audioRef.current.pause();
         setIsPlaying(false);
@@ -136,37 +143,41 @@ export default function App() {
 
     try {
       setLoading(true);
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5001';
+
+      // Pull the live Render URL from Vercel's environment variables
+      const backendUrl =
+        import.meta.env.VITE_BACKEND_URL || 'http://localhost:5001';
 
       const response = await axios.post(
-        'http://localhost:5001/api/generate-audio',
-        { student_id: activeCampaign.id }
+        `${backendUrl}/api/generate-audio`,
+        {
+          student_id: activeCampaign.id
+        }
       );
 
       const base64Audio = response.data.audioBase64;
 
       if (!base64Audio) {
-        throw new Error(
-          'Backend did not return audio data.'
-        );
+        throw new Error("Backend did not return audio data.");
       }
 
-      const safeAudioSrc =
-        `data:audio/mpeg;base64,${base64Audio}`;
+      const safeAudioSrc = `data:audio/mpeg;base64,${base64Audio}`;
 
       setAudioData(safeAudioSrc);
 
-      const audio = new Audio(safeAudioSrc);
-      audioRef.current = audio;
+      // Inject the audio into the persistent mobile player
+      audioRef.current.src = safeAudioSrc;
 
-      audio.onended = () => setIsPlaying(false);
+      audioRef.current.onended = () => {
+        setIsPlaying(false);
+      };
 
-      audio.onerror = (e) => {
+      audioRef.current.onerror = (e) => {
         console.error('Audio object error:', e);
         setIsPlaying(false);
       };
 
-      await audio.play();
+      await audioRef.current.play();
       setIsPlaying(true);
     } catch (error) {
       console.error('Full error:', error);
@@ -195,13 +206,13 @@ export default function App() {
           </button>
 
           <div style={styles.navIndicator}>
-            <span style={styles.navStudentName}>
+            <div style={styles.navStudentName}>
               {activeCampaign.name}
-            </span>
+            </div>
 
-            <span style={styles.navCount}>
+            <div style={styles.navCount}>
               {currentIndex + 1} of {campaigns.length}
-            </span>
+            </div>
           </div>
 
           <button
@@ -225,6 +236,7 @@ export default function App() {
         {/* Story Section */}
         <div style={styles.contentPadding}>
           <div style={styles.storyHeader}>
+
             <div style={styles.headerText}>
               <h1 style={styles.title}>
                 {activeCampaign.title}
@@ -243,39 +255,42 @@ export default function App() {
                 backgroundColor: loading
                   ? '#f3f4f6'
                   : isPlaying
-                  ? '#059669'
-                  : '#ecfdf5',
-                color: isPlaying
-                  ? '#ffffff'
-                  : '#047857',
-                cursor: loading
-                  ? 'not-allowed'
-                  : 'pointer',
+                  ? '#fee2e2'
+                  : '#059669',
+                color: loading
+                  ? '#9ca3af'
+                  : isPlaying
+                  ? '#dc2626'
+                  : '#ffffff',
+                border: loading
+                  ? '1px solid #e5e7eb'
+                  : 'none',
+                cursor: loading ? 'not-allowed' : 'pointer'
               }}
             >
               {loading ? (
                 <>
                   <Loader2
-                    size={17}
+                    size={18}
                     style={styles.spinner}
                   />
                   Generating...
                 </>
               ) : isPlaying ? (
                 <>
-                  <Pause size={17} />
+                  <Pause size={18} />
                   Pause
                 </>
               ) : (
                 <>
-                  <Volume2 size={17} />
+                  <Volume2 size={18} />
                   Listen
                 </>
               )}
             </button>
           </div>
 
-          <div style={styles.divider}></div>
+          <div style={styles.divider} />
 
           <div style={styles.storyContent}>
             {visibleStory.map((paragraph, index) => (
@@ -286,30 +301,30 @@ export default function App() {
                 {paragraph}
               </p>
             ))}
-
-            {activeCampaign.story.length > 3 && (
-              <div style={styles.readMoreWrapper}>
-                <button
-                  onClick={() =>
-                    setIsExpanded(!isExpanded)
-                  }
-                  style={styles.readMoreButton}
-                >
-                  {isExpanded ? (
-                    <>
-                      Read Less
-                      <ChevronUp size={16} />
-                    </>
-                  ) : (
-                    <>
-                      Read Full Story
-                      <ChevronDown size={16} />
-                    </>
-                  )}
-                </button>
-              </div>
-            )}
           </div>
+
+          {activeCampaign.story.length > 3 && (
+            <div style={styles.readMoreWrapper}>
+              <button
+                onClick={() =>
+                  setIsExpanded(!isExpanded)
+                }
+                style={styles.readMoreButton}
+              >
+                {isExpanded ? (
+                  <>
+                    <ChevronUp size={16} />
+                    Read Less
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown size={16} />
+                    Read Full Story
+                  </>
+                )}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -324,8 +339,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'flex-start',
     padding: '40px 24px',
-    fontFamily:
-      '"Inter", system-ui, -apple-system, sans-serif',
+    fontFamily: '"Inter", system-ui, -apple-system, sans-serif'
   },
 
   mainCard: {
@@ -335,7 +349,7 @@ const styles = {
     borderRadius: '24px',
     boxShadow:
       '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
-    overflow: 'hidden',
+    overflow: 'hidden'
   },
 
   navControls: {
@@ -344,7 +358,7 @@ const styles = {
     alignItems: 'center',
     padding: '16px 24px',
     borderBottom: '1px solid #f3f4f6',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#ffffff'
   },
 
   navButton: {
@@ -359,53 +373,53 @@ const styles = {
     cursor: 'pointer',
     padding: '6px 12px',
     borderRadius: '20px',
-    transition: 'all 0.2s ease',
+    transition: 'all 0.2s ease'
   },
 
   navIndicator: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'center'
   },
 
   navStudentName: {
     fontSize: '14px',
     fontWeight: '700',
-    color: '#111827',
+    color: '#111827'
   },
 
   navCount: {
     fontSize: '12px',
     color: '#6b7280',
-    fontWeight: '500',
+    fontWeight: '500'
   },
 
   imageBox: {
     width: '100%',
     height: '340px',
-    backgroundColor: '#e5e7eb',
+    backgroundColor: '#e5e7eb'
   },
 
   profileImage: {
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-    objectPosition: 'center 20%',
+    objectPosition: 'center 20%'
   },
 
   contentPadding: {
-    padding: '32px',
+    padding: '32px'
   },
 
   storyHeader: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    gap: '24px',
+    gap: '24px'
   },
 
   headerText: {
-    flex: 1,
+    flex: 1
   },
 
   title: {
@@ -413,7 +427,7 @@ const styles = {
     fontWeight: '800',
     color: '#111827',
     margin: '0 0 8px 0',
-    letterSpacing: '-0.02em',
+    letterSpacing: '-0.02em'
   },
 
   subtitle: {
@@ -421,14 +435,13 @@ const styles = {
     color: '#6b7280',
     margin: 0,
     lineHeight: '1.5',
-    fontWeight: '500',
+    fontWeight: '500'
   },
 
   audioButton: {
     display: 'inline-flex',
     alignItems: 'center',
     gap: '8px',
-    border: 'none',
     borderRadius: '12px',
     padding: '12px 20px',
     fontSize: '14px',
@@ -436,17 +449,17 @@ const styles = {
     transition: 'all 0.2s ease',
     whiteSpace: 'nowrap',
     boxShadow:
-      '0 4px 6px -1px rgba(5, 150, 105, 0.2)',
+      '0 4px 6px -1px rgba(5, 150, 105, 0.2)'
   },
 
   spinner: {
-    animation: 'spin 1s linear infinite',
+    animation: 'spin 1s linear infinite'
   },
 
   divider: {
     height: '1px',
     backgroundColor: '#f3f4f6',
-    margin: '24px 0',
+    margin: '24px 0'
   },
 
   storyContent: {
@@ -455,11 +468,11 @@ const styles = {
     fontSize: '16px',
     display: 'flex',
     flexDirection: 'column',
-    gap: '16px',
+    gap: '16px'
   },
 
   paragraph: {
-    margin: 0,
+    margin: 0
   },
 
   readMoreWrapper: {
@@ -467,7 +480,7 @@ const styles = {
     justifyContent: 'center',
     marginTop: '12px',
     paddingTop: '16px',
-    borderTop: '1px dashed #e5e7eb',
+    borderTop: '1px dashed #e5e7eb'
   },
 
   readMoreButton: {
@@ -482,6 +495,6 @@ const styles = {
     cursor: 'pointer',
     padding: '8px 16px',
     borderRadius: '20px',
-    transition: 'all 0.2s ease',
-  },
+    transition: 'all 0.2s ease'
+  }
 };
