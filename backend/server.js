@@ -5,10 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const port = process.env.PORT || 5001;
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+
 
 app.use(cors());
 app.use(express.json());
@@ -78,6 +75,7 @@ app.post('/api/generate-audio', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+const port = process.env.PORT || 5001;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
