@@ -90,7 +90,6 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [audioData, setAudioData] = useState(null);
 
-  // Initialize a persistent audio element immediately for mobile unlock
   const audioRef = useRef(new Audio());
 
   const activeCampaign = campaigns[currentIndex];
@@ -102,6 +101,7 @@ export default function App() {
   const handleNext = () => {
     stopAudio();
     setIsExpanded(false);
+
     setCurrentIndex((prev) =>
       prev === campaigns.length - 1 ? 0 : prev + 1
     );
@@ -110,6 +110,7 @@ export default function App() {
   const handlePrev = () => {
     stopAudio();
     setIsExpanded(false);
+
     setCurrentIndex((prev) =>
       prev === 0 ? campaigns.length - 1 : prev - 1
     );
@@ -117,14 +118,12 @@ export default function App() {
 
   const stopAudio = () => {
     audioRef.current.pause();
-    audioRef.current.src = "";
+    audioRef.current.src = '';
     setIsPlaying(false);
     setAudioData(null);
   };
 
   const handleToggleAudio = async () => {
-    // Register the physical tap with the mobile browser
-    // to help bypass autoplay restrictions.
     if (!audioData) {
       audioRef.current.play().catch(() => {});
     }
@@ -144,9 +143,9 @@ export default function App() {
     try {
       setLoading(true);
 
-      // Pull the live Render URL from Vercel's environment variables
       const backendUrl =
-        import.meta.env.VITE_BACKEND_URL || 'http://localhost:5001';
+        import.meta.env.VITE_BACKEND_URL ||
+        'http://localhost:5001';
 
       const response = await axios.post(
         `${backendUrl}/api/generate-audio`,
@@ -158,14 +157,16 @@ export default function App() {
       const base64Audio = response.data.audioBase64;
 
       if (!base64Audio) {
-        throw new Error("Backend did not return audio data.");
+        throw new Error(
+          'Backend did not return audio data.'
+        );
       }
 
-      const safeAudioSrc = `data:audio/mpeg;base64,${base64Audio}`;
+      const safeAudioSrc =
+        `data:audio/mpeg;base64,${base64Audio}`;
 
       setAudioData(safeAudioSrc);
 
-      // Inject the audio into the persistent mobile player
       audioRef.current.src = safeAudioSrc;
 
       audioRef.current.onended = () => {
@@ -173,19 +174,29 @@ export default function App() {
       };
 
       audioRef.current.onerror = (e) => {
-        console.error('Audio object error:', e);
+        console.error(
+          'Audio object error:',
+          e
+        );
         setIsPlaying(false);
       };
 
       await audioRef.current.play();
+
       setIsPlaying(true);
     } catch (error) {
-      console.error('Full error:', error);
+      console.error(
+        'Full error:',
+        error
+      );
 
       const serverMessage =
-        error.response?.data?.error || error.message;
+        error.response?.data?.error ||
+        error.message;
 
-      alert(`Error playing voice: ${serverMessage}`);
+      alert(
+        `Error playing voice: ${serverMessage}`
+      );
     } finally {
       setLoading(false);
     }
@@ -265,7 +276,9 @@ export default function App() {
                 border: loading
                   ? '1px solid #e5e7eb'
                   : 'none',
-                cursor: loading ? 'not-allowed' : 'pointer'
+                cursor: loading
+                  ? 'not-allowed'
+                  : 'pointer'
               }}
             >
               {loading ? (
@@ -293,14 +306,16 @@ export default function App() {
           <div style={styles.divider} />
 
           <div style={styles.storyContent}>
-            {visibleStory.map((paragraph, index) => (
-              <p
-                key={index}
-                style={styles.paragraph}
-              >
-                {paragraph}
-              </p>
-            ))}
+            {visibleStory.map(
+              (paragraph, index) => (
+                <p
+                  key={index}
+                  style={styles.paragraph}
+                >
+                  {paragraph}
+                </p>
+              )
+            )}
           </div>
 
           {activeCampaign.story.length > 3 && (
@@ -339,7 +354,8 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'flex-start',
     padding: '40px 24px',
-    fontFamily: '"Inter", system-ui, -apple-system, sans-serif'
+    fontFamily:
+      '"Inter", system-ui, -apple-system, sans-serif'
   },
 
   mainCard: {
@@ -357,7 +373,8 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '16px 24px',
-    borderBottom: '1px solid #f3f4f6',
+    borderBottom:
+      '1px solid #f3f4f6',
     backgroundColor: '#ffffff'
   },
 
@@ -366,14 +383,16 @@ const styles = {
     alignItems: 'center',
     gap: '4px',
     background: '#f9fafb',
-    border: '1px solid #e5e7eb',
+    border:
+      '1px solid #e5e7eb',
     color: '#374151',
     fontSize: '13px',
     fontWeight: '600',
     cursor: 'pointer',
     padding: '6px 12px',
     borderRadius: '20px',
-    transition: 'all 0.2s ease'
+    transition:
+      'all 0.2s ease'
   },
 
   navIndicator: {
@@ -446,14 +465,16 @@ const styles = {
     padding: '12px 20px',
     fontSize: '14px',
     fontWeight: '600',
-    transition: 'all 0.2s ease',
+    transition:
+      'all 0.2s ease',
     whiteSpace: 'nowrap',
     boxShadow:
       '0 4px 6px -1px rgba(5, 150, 105, 0.2)'
   },
 
   spinner: {
-    animation: 'spin 1s linear infinite'
+    animation:
+      'spin 1s linear infinite'
   },
 
   divider: {
@@ -480,7 +501,8 @@ const styles = {
     justifyContent: 'center',
     marginTop: '12px',
     paddingTop: '16px',
-    borderTop: '1px dashed #e5e7eb'
+    borderTop:
+      '1px dashed #e5e7eb'
   },
 
   readMoreButton: {
@@ -488,13 +510,15 @@ const styles = {
     alignItems: 'center',
     gap: '6px',
     background: '#f0fdf4',
-    border: '1px solid #bbf7d0',
+    border:
+      '1px solid #bbf7d0',
     color: '#059669',
     fontSize: '14px',
     fontWeight: '600',
     cursor: 'pointer',
     padding: '8px 16px',
     borderRadius: '20px',
-    transition: 'all 0.2s ease'
+    transition:
+      'all 0.2s ease'
   }
 };
