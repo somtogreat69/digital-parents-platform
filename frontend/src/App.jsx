@@ -143,9 +143,10 @@ export default function App() {
     try {
       setLoading(true);
 
+      // HARDCODED FALLBACK TO RENDER URL
       const backendUrl =
         import.meta.env.VITE_BACKEND_URL ||
-        'http://localhost:5001';
+        'https://digital-parents-backend.onrender.com';
 
       const response = await axios.post(
         `${backendUrl}/api/generate-audio`,
@@ -195,7 +196,7 @@ export default function App() {
         error.message;
 
       alert(
-        `Error playing voice: ${serverMessage}`
+        `Backend Error: ${serverMessage}`
       );
     } finally {
       setLoading(false);
