@@ -54,19 +54,19 @@ const campaigns = [
   },
   {
     id: 'chinedu_03',
-    name: 'Chinedu Okafor',
-    title: 'Architecture Workstation',
+    name: 'Max Spence',
+    title: 'Architecture Laptop',
     subtitle:
       'Designing a better tomorrow requires the right tools today.',
     image:
       'https://images.unsplash.com/photo-1506803682981-6e718a9dd3ee?q=80&w=800&auto=format&fit=crop',
 
     story: [
-      "Architecture is about building the future, but right now, Chinedu Okafor's future is on pause.",
-      "Chinedu is a brilliant 300-level Architecture student whose primary tool—his rendering laptop—was severely damaged during a flood at his off-campus hostel.",
+      "Architecture is about building the future, but right now, Max Spence's future is on pause.",
+      "Max is a brilliant 300-level Architecture student whose primary tool—his rendering laptop—was severely damaged during a flood at his off-campus hostel.",
       "In architecture, missing a functioning workstation means missing project deadlines, which directly impacts his grades. He has been borrowing friends' laptops at 2 AM just to keep up, but it is taking a heavy toll on his health and academic performance.",
       "He needs ₦400,000 to replace his workstation and cover his outstanding studio fees for the semester.",
-      "Your support will ensure Chinedu can get back to designing a better tomorrow."
+      "Your support will ensure Max can get back to designing a better tomorrow."
     ]
   },
   {
