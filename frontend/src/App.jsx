@@ -18,7 +18,8 @@ const campaigns = [
     subtitle:
       'Samuel Adekoya Is Starting Again, This Time with a Dream He Truly Believes In.',
     image:
-      'https://images.unsplash.com/photo-1525875975471-999f65706a10?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?q=80&w=800&auto=format&fit=crop',
+
     story: [
       "Sometimes, starting over isn't a sign that you have failed. Sometimes, it is the courage to choose a different path after life has taken you somewhere you never expected.",
       "For Samuel Adekoya, the journey through university has been anything but easy. Samuel gained admission to the University of Benin in 2021 to study chemical engineering, but just months before he began his university journey, his father passed away.",
@@ -41,7 +42,8 @@ const campaigns = [
     title: 'Clinical Fees',
     subtitle: 'Help Aisha cross the finish line of medical school.',
     image:
-      'https://images.unsplash.com/photo-1531123414708-f95259eff225?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=800&auto=format&fit=crop',
+
     story: [
       "The final year of medical school is usually a time of triumph, but for Aisha Bello, it has become a race against time.",
       "Aisha is a 500-level Medicine and Surgery student at the University of Lagos. For the past five years, she has maintained excellent grades while juggling multiple part-time tutoring jobs to support her education.",
@@ -57,7 +59,8 @@ const campaigns = [
     subtitle:
       'Designing a better tomorrow requires the right tools today.',
     image:
-      'https://images.unsplash.com/photo-1543807535-eceef0bc6599?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1506803682981-6e718a9dd3ee?q=80&w=800&auto=format&fit=crop',
+
     story: [
       "Architecture is about building the future, but right now, Chinedu Okafor's future is on pause.",
       "Chinedu is a brilliant 300-level Architecture student whose primary tool—his rendering laptop—was severely damaged during a flood at his off-campus hostel.",
@@ -74,6 +77,7 @@ const campaigns = [
       'From a small farming community to the Nigerian Bar.',
     image:
       'https://images.unsplash.com/photo-1589156229687-496a31ad1d1f?q=80&w=800&auto=format&fit=crop',
+
     story: [
       "Fatima Yusuf has fought against all odds to secure her law degree, graduating top of her class. Now, only the Nigerian Law School stands between her and the Bar.",
       "Coming from a small farming community, Fatima is the first female in her extended family to attend university. Her community pooled resources to see her through her undergraduate studies, but the mandatory Law School campus fees are too steep for them to cover.",
